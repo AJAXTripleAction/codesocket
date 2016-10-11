@@ -346,7 +346,8 @@ io.on('connection', function(socket){
         updateServerState(inFlightOp, inFlightOp.room);
         io.sockets.in(inFlightOp.room).emit('newOp', inFlightOp);
       }
-      
+      delete history[inFlightOp.room][inFlightOp.history][inFlightOp.history];
+
     } else {
       console.log('-------------in rejected-----------', inFlightOp, serverState[inFlightOp.room])
       io.to(socket.id).emit('rejected op', inFlightOp)
