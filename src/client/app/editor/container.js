@@ -422,7 +422,7 @@ class EditorContainer extends React.Component {
         <button onClick={e=>this.type()}>start typing </button>
         <button onClick={e=>this.stopTyping()}>stop typing </button>
         <EditorPresentation saveCode={this.saveCode.bind(this)}/>
-        <div id='serverEditor' >
+        <div id='serverEditor' style={{display: 'none'}} >
         </div>
       </div>
     )
