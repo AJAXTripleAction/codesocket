@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import EditorPresentation from './presentation'
 import axios from 'axios'
 var Quill = require('quill');
-import oTransform from '../utils/otransform.js'
+var {oTransform} = require('../utils/otransform.js')
 
 export class EditorContainer extends React.Component {
 
