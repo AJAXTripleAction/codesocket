@@ -122,14 +122,15 @@ export class EditorContainer extends React.Component {
 
         console.log('inflight Op:', context.props.inFlightOp);
 
+        if(delta.ops[0].retain === undefined){
+          delta.ops.unshift({retain:0});
+        }
+        
         if(context.props.serverState === context.props.quillHistory 
           && context.props.inFlightOp.length === 0
           && context.props.buffer.length === 0){
           //send change to server
           
-          if(delta.ops[0].retain === undefined){
-            delta.ops.unshift({retain:0});
-          }
 
           // console.log('my current room', context.props.room)
           // console.log('woo new delta', delta)
