@@ -11,7 +11,7 @@ class VideoContainer extends React.Component {
   // static propTypes = {
   // }
   componentWillUnmount () {
-    console.log('video will unmount');
+    // console.log('video will unmount');
 
     // console.log(this.props.pc)
     
@@ -73,49 +73,49 @@ class VideoContainer extends React.Component {
 
     var socket = this.props.socket;
     //var socket = this.props.socket;
-    console.log('socket inside video container', socket);
+    // console.log('socket inside video container', socket);
     //var socket = io.connect('/' + room);
 
     if (room !== '') {
       socket.emit('create or join', room);
-      console.log('Attempted to create or  join room', room);
+      // console.log('Attempted to create or  join room', room);
     }
 
     socket.on('created', function(room) {
-      console.log('Created room ' + room);
+      // console.log('Created room ' + room);
       isInitiator = true;
-      console.log('i am initiator?', isInitiator)
+      // console.log('i am initiator?', isInitiator)
     });
 
     socket.on('full', function(room) {
-      console.log('Room ' + room + ' is full');
+      // console.log('Room ' + room + ' is full');
     });
 
     socket.on('join', function (room){
-      console.log('Another peer made a request to join room ' + room);
-      console.log('This peer is the initiator of room ' + room + '!');
+      // console.log('Another peer made a request to join room ' + room);
+      // console.log('This peer is the initiator of room ' + room + '!');
       isChannelReady = true;
     });
 
     socket.on('joined', function(room) {
-      console.log('joined: ' + room);
+      // console.log('joined: ' + room);
       isChannelReady = true;
     });
 
     socket.on('log', function(array) {
-      console.log.apply(console, array);
+      // console.log.apply(console, array);
     });
 
     ////////////////////////////////////////////////
 
     function sendMessage(message) {
-      console.log('Client sending message: ', message);
+      // console.log('Client sending message: ', message);
       socket.emit('message', message);
     }
 
     // This client receives a message
     socket.on('message', function(message) {
-      console.log('Client received message:', message);
+      // console.log('Client received message:', message);
 
       if (message === 'got user media') {
         maybeStart();
@@ -134,7 +134,7 @@ class VideoContainer extends React.Component {
         });
         pc.addIceCandidate(candidate);
       } else if (message === 'bye' && isStarted) {
-        console.log('handling remote hangup!!!!!!!');
+        // console.log('handling remote hangup!!!!!!!');
         handleRemoteHangup();
         isInitiator = true;
       }
@@ -152,11 +152,11 @@ class VideoContainer extends React.Component {
       })
       .then(gotStream)
       .catch(function(e) {
-        alert('getUserMedia() error: ' + e.name);
+        alert('Webcam error: ' + e.name);
       });
 
     function gotStream(stream) {
-      console.log('Adding local stream.');
+      // console.log('Adding local stream.');
       localVideo.src = window.URL.createObjectURL(stream);
       localStream = stream;
       context.localstream =localStream;
@@ -170,7 +170,7 @@ class VideoContainer extends React.Component {
       video: true
     };
 
-    console.log('Getting user media with constraints', constraints);
+    // console.log('Getting user media with constraints', constraints);
 
     // if (location.hostname !== 'localhost') {
     //   requestTurn(
@@ -179,15 +179,15 @@ class VideoContainer extends React.Component {
     // }
 
     function maybeStart() {
-      console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
+      // console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
       if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
-        console.log('>>>>>> creating peer connection');
+        // console.log('>>>>>> creating peer connection');
         createPeerConnection();
         pc.addStream(localStream);
         isStarted = true;
-        console.log('isInitiator', isInitiator);
+        // console.log('isInitiator', isInitiator);
         if (isInitiator) {
-          console.log('before do call')
+          // console.log('before do call')
           doCall();
         }
       }
@@ -205,20 +205,20 @@ class VideoContainer extends React.Component {
         pc.onicecandidate = handleIceCandidate;
         pc.onaddstream = handleRemoteStreamAdded;
         pc.onremovestream = handleRemoteStreamRemoved;
-        console.log('Created RTCPeerConnnection');
+        // console.log('Created RTCPeerConnnection');
         context.props.dispatch({
               type: 'UPDATE_PC', 
               pc: pc
         });
       } catch (e) {
-        console.log('Failed to create PeerConnection, exception: ' + e.message);
+        // console.log('Failed to create PeerConnection, exception: ' + e.message);
         alert('Cannot create RTCPeerConnection object.');
         return;
       }
     }
 
     function handleIceCandidate(event) {
-      console.log('icecandidate event: ', event);
+      // console.log('icecandidate event: ', event);
       if (event.candidate) {
         sendMessage({
           type: 'candidate',
@@ -228,28 +228,28 @@ class VideoContainer extends React.Component {
           theRoom: room
         });
       } else {
-        console.log('End of candidates.');
+        // console.log('End of candidates.');
       }
     }
 
     function handleRemoteStreamAdded(event) {
-      console.log('Remote stream added.');
+      // console.log('Remote stream added.');
       remoteVideo.src = window.URL.createObjectURL(event.stream);
       remoteStream = event.stream;
       context.remotestream = remoteStream;
     }
 
     function handleCreateOfferError(event) {
-      console.log('createOffer() error: ', event);
+      // console.log('createOffer() error: ', event);
     }
 
     function doCall() {
-      console.log('Sending offer to peer');
+      // console.log('Sending offer to peer');
       pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
     }
 
     function doAnswer() {
-      console.log('Sending answer to peer.');
+      // console.log('Sending answer to peer.');
       pc.createAnswer().then(
         setLocalAndSendMessage,
         onCreateSessionDescriptionError
@@ -260,7 +260,7 @@ class VideoContainer extends React.Component {
       // Set Opus as the preferred codec in SDP if Opus is present.
       //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
       pc.setLocalDescription(sessionDescription);
-      console.log('setLocalAndSendMessage sending message', sessionDescription);
+      // console.log('setLocalAndSendMessage sending message', sessionDescription);
       sendMessage(sessionDescription);
     }
 
@@ -278,13 +278,13 @@ class VideoContainer extends React.Component {
         }
       }
       if (!turnExists) {
-        console.log('Getting TURN server from ', turnURL);
+        // console.log('Getting TURN server from ', turnURL);
         // No TURN server. Get one from computeengineondemand.appspot.com:
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4 && xhr.status === 200) {
             var turnServer = JSON.parse(xhr.responseText);
-            console.log('Got TURN server: ', turnServer);
+            // console.log('Got TURN server: ', turnServer);
             pcConfig.iceServers.push({
               'url': 'turn:' + turnServer.username + '@' + turnServer.turn,
               'credential': turnServer.password
@@ -298,23 +298,23 @@ class VideoContainer extends React.Component {
     }
 
     function handleRemoteStreamAdded(event) {
-      console.log('Remote stream added.');
+      // console.log('Remote stream added.');
       remoteVideo.src = window.URL.createObjectURL(event.stream);
       remoteStream = event.stream;
     }
 
     function handleRemoteStreamRemoved(event) {
-      console.log('Remote stream removed. Event: ', event);
+      // console.log('Remote stream removed. Event: ', event);
     }
 
     function hangup() {
-      console.log('Hanging up.');
+      // console.log('Hanging up.');
       stop();
       sendMessage('bye');
     }
 
     function handleRemoteHangup() {
-      console.log('Session terminated.');
+      // console.log('Session terminated.');
       stop();
       isInitiator = false;
     }

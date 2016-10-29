@@ -87,8 +87,8 @@ app.get('/auth/github/callback',
   passportGithub.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication
-    console.log(res.req.session.passport.user, '<---')
-    console.log(req.isAuthenticated(), '<-----------------')
+    // console.log(res.req.session.passport.user, '<---')
+    // console.log(req.isAuthenticated(), '<-----------------')
 
     res.redirect('/secure');
   }
@@ -145,7 +145,7 @@ app.use(bodyParser.json());
 
 // This never triggers?
 app.get('/', function(req, res) {
-  console.log('in /')
+  // console.log('in /')
 	res.send('Hello World');
 });
 
@@ -157,7 +157,7 @@ app.get('/', function(req, res) {
 
 
 app.get('/doclist', function(req, res) {
-  console.log('yooo----', req.user, '<=== req.user from doclist in server.js');
+  // console.log('yooo----', req.user, '<=== req.user from doclist in server.js');
   helper.fetchrooms( function(docs){
     if(docs){
       res.send(docs);
@@ -168,7 +168,7 @@ app.get('/doclist', function(req, res) {
 })
 
 app.post('/savedoc', helper.checkLogin, function(req, res) {
-  console.log('in save doc')
+  // console.log('in save doc')
   db.Doc.update({
     doc_name:req.body.room,
     doc_content: req.body.contents
@@ -176,7 +176,7 @@ app.post('/savedoc', helper.checkLogin, function(req, res) {
   {
     where: {doc_name:req.body.room}
   }).then(function(result) {
-    console.log('in then of savedoc', result)
+    // console.log('in then of savedoc', result)
     res.status(201).send(result)
   });
 
@@ -184,18 +184,18 @@ app.post('/savedoc', helper.checkLogin, function(req, res) {
 })
 
 var oTransform = function(newObj, oldObj, callback){
-  console.log('----------------------in oTransform')
+  // console.log('----------------------in oTransform')
 
-  console.log('newop', newObj);
-  console.log('old', oldObj);
+  // console.log('newop', newObj);
+  // console.log('old', oldObj);
   var newOp = newObj.op[0];
   var oldOp = oldObj.op[0];
 
   var newInsertion = newOp.retain;
   var oldInsertion = oldOp.retain;
 
-  console.log('newInsertion', newInsertion);
-  console.log('oldinsertion', oldInsertion);
+  // console.log('newInsertion', newInsertion);
+  // console.log('oldinsertion', oldInsertion);
   if(newInsertion >= oldInsertion){
     //newInsertion++;
     newOp.retain = newInsertion;
@@ -203,8 +203,8 @@ var oTransform = function(newObj, oldObj, callback){
     // oldInsertion++;
     // oldOp.retain = oldInsertion;
   }
-  console.log('2newop', newOp);
-  console.log('2old', oldOp);
+  // console.log('2newop', newOp);
+  // console.log('2old', oldOp);
   callback(newObj);
   // if(oldOp.)
   //if item has insert as key
@@ -215,11 +215,11 @@ var falseCounter = 0;
 var isValid = function(operation, room){
   //console.log('is valide operation', operation, serverState[room])
   if(operation.history === serverState[room]){
-    console.log('true', operation);
+    // console.log('true', operation);
     return true;
   } else {
     if (falseCounter < 20) {
-      console.log('false', operation);
+      // console.log('false', operation);
       falseCounter++;
     }
 
@@ -228,19 +228,19 @@ var isValid = function(operation, room){
 }
 
 var updateServerState = function(operation, room){
-  console.log('in update server state', operation)
+  // console.log('in update server state', operation)
   var retain = operation.op[0].retain;
   var insert = operation.op[1].insert;
   var deleteop = operation.op[1].delete;
   if(operation.op[2] !== undefined) {
     deleteop = operation.op[2].delete;
   }
-  console.log('before serverState', serverState);
-  console.log('retain', retain);
-  console.log('insert', insert);
+  // console.log('before serverState', serverState);
+  // console.log('retain', retain);
+  // console.log('insert', insert);
 
   if(serverState[room] === '\n'){
-    console.log('in true condition')
+    // console.log('in true condition')
     if(insert!== undefined) {
       serverState[room] = insert + '\n';
     }
@@ -252,7 +252,7 @@ var updateServerState = function(operation, room){
       serverState[room] = serverState[room].slice(0, retain) + insert + serverState[room].slice(retain);
     } 
   }
-  console.log('after serverState', serverState[room]);
+  // console.log('after serverState', serverState[room]);
 }
 
 var docExists = function(user, room, callback) {
@@ -338,7 +338,7 @@ var io = require('socket.io')(httpsServer);
 var commands = [];
 
 io.on('connection', function(socket){
-  console.log('on connection')
+  // console.log('on connection')
   // *********** Begin WebRTC Socket ************
   function log() {
     var array = ['Message from server:'];
@@ -361,7 +361,7 @@ io.on('connection', function(socket){
         // console.log('before transformed. should be obj', inFlightOp);
         //transform
         //console.log('before otransform passing in ', history[inFlightOp.room])
-        console.log('before otransform passing in ', history[inFlightOp.room][inFlightOp.history][0])
+        // console.log('before otransform passing in ', history[inFlightOp.room][inFlightOp.history][0])
         oTransform(inFlightOp, history[inFlightOp.room][inFlightOp.history][0], function(transformed){
           // console.log('transformed. should be obj', transformed);
           // console.log('room', inFlightOp.room);
@@ -380,17 +380,17 @@ io.on('connection', function(socket){
         io.to(socket.id).emit('clear inflight', inFlightOp);
         history[inFlightOp.room][myhistory] = [inFlightOp];
         // console.log('room:-', inFlightOp.room)
-          console.log('----------------------emited')
+          // console.log('----------------------emited')
         updateServerState(inFlightOp, inFlightOp.room);
         io.sockets.in(inFlightOp.room).emit('newOp', inFlightOp);
 
       } else {
-        console.log('room but no myhistory/conflict')
+        // console.log('room but no myhistory/conflict')
         var myhistory = inFlightOp.history;
         io.to(socket.id).emit('clear inflight', inFlightOp);
         history[inFlightOp.room][myhistory] = [inFlightOp];
         // console.log('room:-', inFlightOp.room)
-          console.log('----------------------emited')
+          // console.log('----------------------emited')
         updateServerState(inFlightOp, inFlightOp.room);
         io.sockets.in(inFlightOp.room).emit('newOp', inFlightOp);
       }
@@ -417,7 +417,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('create or join', function(room) {
-    console.log(room, '===== ROOM');
+    // console.log(room, '===== ROOM');
     // var fetch = function(exists) {
     //   if(exists){
     //     console.log('doc exists')
@@ -433,15 +433,15 @@ io.on('connection', function(socket){
     // var exists = helper.docExists(room, fetch);
     // console.log('exists', exists);
 
-    console.log('create or join');
+    // console.log('create or join');
 
     log('Received request to create or join room ' + room);
-    console.log('Received request to create or join room ' + room);
+    // console.log('Received request to create or join room ' + room);
 
     var users = Object.keys(socket.rooms).length;
     var numClients;
     var socketRoom = io.sockets.adapter.rooms[room];
-    console.log(io.sockets.adapter.rooms);
+    // console.log(io.sockets.adapter.rooms);
 
     if (socketRoom) {
       numClients = socketRoom.length + 1;
@@ -449,12 +449,12 @@ io.on('connection', function(socket){
       numClients = 1;
     }
 
-    console.log('numClients', numClients)
+    // console.log('numClients', numClients)
     //var numClients = io.sockets.sockets.length;
     log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
     if (numClients === 1) {
-      console.log('one client')
+      // console.log('one client')
       socket.join(room);
       
       // Reset serverState and history on being the first to enter a doc.
@@ -469,13 +469,13 @@ io.on('connection', function(socket){
 
       // docExists(socket.id, room, function(exists){
       //   if(exists){
-        console.log('before findone. room:', room)
+        // console.log('before findone. room:', room)
       db.Doc.findOne({where: {
         doc_name: room
       }})
       .then(function(doc) {
         //console.log('found doc', doc)
-        console.log('doc-----------------', doc)
+        // console.log('doc-----------------', doc)
         if (doc && JSON.parse(doc['doc_content'])) {
           serverState[room] = JSON.parse(doc['doc_content'])[0].insert;
         }
@@ -511,7 +511,7 @@ io.on('connection', function(socket){
       socket.broadcast.to(room).emit('fetch live version', socket.id);
       //socket.emit('full', room);
     }
-    console.log('Room ' + room + ' now has ' + numClients + ' users.');
+    console.log(new Date().toLocaleDateString() + ' '  + new Date().toLocaleTimeString() + ' --Room ' + room + ' now has ' + numClients + ' users.');
 
   });
 
@@ -534,7 +534,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('bye', function(){
-    console.log('received bye');
+    // console.log('received bye');
   });
   // *********** End WebRTC Socket ************
   
@@ -577,7 +577,7 @@ io.on('connection', function(socket){
 // app.use('/api/', require('./config/router'))
 
 httpsServer.listen(3000, function () {
-  console.log('Example https app listening on port 3000!');
+  console.log('CodeSocket listening on HTTPS port 3000!');
 });
 
 module.exports.io = io;

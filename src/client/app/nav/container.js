@@ -20,8 +20,8 @@ export class NavContainer extends React.Component {
     //console.log('it hit componentDidMount =====>', this.state.user, this.props);
     axios.get('/access')
     .then( function(obj) {
-      console.log('axios success')
-      console.log(obj);
+      // console.log('axios success')
+      // console.log(obj);
       if(!obj.data.user_name) {
           hashHistory.push('/');
       }
@@ -38,7 +38,7 @@ export class NavContainer extends React.Component {
   }
   addDoc() {
     var context = this;
-    console.log('==================props', this.props)
+    // console.log('==================props', this.props)
     //var username = prompt('What\'s your name?');
     // if(username){
     //   context.props.dispatch({
@@ -64,12 +64,12 @@ export class NavContainer extends React.Component {
         context.saveuser(username, function(user){
           context.checkDocExist(username, room, function(exists){
             if(exists){
-              console.log('exists', exists)
+              // console.log('exists', exists)
               alert('Cannot create room because room already exists. Try another name or join the existing room!');
             } else {
               context.saveroom(room, function(roomname){
                 context.saveroomtouser(username, room, function(userroom){
-                  console.log('saved user room', userroom);
+                  // console.log('saved user room', userroom);
                   hashHistory.push('/loading');
                   hashHistory.push('/doc/' + room);
                 })
@@ -85,24 +85,24 @@ export class NavContainer extends React.Component {
   checkDocExist(user, room, callback) {
     axios.get('/roomExists', {params: {user: user, room: room}})
     .then(function(roomExists){
-      console.log('client found rom', roomExists)
+      // console.log('client found rom', roomExists)
       callback(roomExists.data);
     })
   }
   saveuser(username, callback){
-    console.log('in save user', username)
+    // console.log('in save user', username)
     axios.post('/adduser',{user: username})
     .then(function(user){
-      console.log('new user saved');
+      // console.log('new user saved');
       callback(user);
     })
   }
 
   saveroom(room, callback){
-    console.log('in save user', room)
+    // console.log('in save user', room)
     axios.post('/addroom',{room: room})
     .then(function(room){
-      console.log('new room saved');
+      // console.log('new room saved');
       callback(room);
     })
   }
@@ -112,10 +112,10 @@ export class NavContainer extends React.Component {
       room: room, 
       user: user
     }
-    console.log('before add room', postPackage)
+    // console.log('before add room', postPackage)
     axios.post('/addroomtouser', postPackage)
     .then(function(userroom) {
-        console.log('====', userroom);
+        // console.log('====', userroom);
         callback(userroom);
     });
   }
@@ -128,7 +128,7 @@ export class NavContainer extends React.Component {
       type: 'UPDATE_ROOM', 
       room: room
     })
-    console.log('=====================room', room)
+    // console.log('=====================room', room)
     if(!this.props.userName) {
       alert('you are not logged in');
       hashHistory.push('/');
@@ -173,8 +173,8 @@ export class NavContainer extends React.Component {
 
   openModal() { 
     var context = this;
-    console.log('what is context', context);
-    console.log('what is this:', context.context.store.dispatch)
+    // console.log('what is context', context);
+    // console.log('what is this:', context.context.store.dispatch)
     context.context.store.dispatch({
       type: 'DOC_SELECTION_MODAL', 
       modalopen: true
@@ -183,14 +183,14 @@ export class NavContainer extends React.Component {
     //fetch list of rooms
     axios.get('/doclist', {params: {user: context.props.userName}})
     .then(function(docs){
-      console.log('client got docs back', docs)
+      // console.log('client got docs back', docs)
       if(docs.data.length) {
         context.props.dispatch({
           type: 'UPDATE_DOC_LIST', 
           doclist: docs.data
         });
       } else {
-        console.log('nothing in doclist')
+        // console.log('nothing in doclist')
       }
     })
 
