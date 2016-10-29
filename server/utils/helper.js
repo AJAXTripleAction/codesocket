@@ -129,8 +129,12 @@ function checkLogin(req, res, next) {
  //    res.send('you are not logged in!');
  //  }
  
- console.log('===========', req.isAuthenticated())
+ // console.log('===========', req.isAuthenticated())
   if (req.isAuthenticated() || process.env.NODE_ENV === 'test' ) {
+    var timestamp = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+    if (req.session.passport !== undefined && req.session.passport.user !== undefined) {
+      console.log(timestamp + ' ' + req.session.passport.user.user_name + ' is authenticated.');
+    }
     return next();
   }
   res.redirect('/login');
