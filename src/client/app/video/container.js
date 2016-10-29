@@ -152,7 +152,7 @@ class VideoContainer extends React.Component {
       })
       .then(gotStream)
       .catch(function(e) {
-        alert('getUserMedia() error: ' + e.name);
+        alert('Webcam error: ' + e.name);
       });
 
     function gotStream(stream) {
