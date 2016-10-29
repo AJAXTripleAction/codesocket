@@ -49,7 +49,7 @@ export default function sessionReducer (state = sessionInitialState, action) {
      }
     }  
     case 'UPDATE_INFLIGHTOP' : {
-      console.log('in in flight reducer')
+      // console.log('in in flight reducer')
      return {
        ...state, 
        inFlightOp: action.inFlightOp
@@ -74,14 +74,14 @@ export default function sessionReducer (state = sessionInitialState, action) {
       }
     }    
     case 'UPDATE_SERVERQUILL' : {
-      console.log('i am in reducer for UPDATE_SERVERQUILL', action.serverquill)
+      // console.log('i am in reducer for UPDATE_SERVERQUILL', action.serverquill)
       return {
         ...state,
         serverquill: action.serverquill
       }
     }
     case 'UPDATE_QUILLHISTORY' : {
-      console.log('i am in reducer for quillHistory', action.quillHistory)
+      // console.log('i am in reducer for quillHistory', action.quillHistory)
       return {
         ...state,
         quillHistory: action.quillHistory

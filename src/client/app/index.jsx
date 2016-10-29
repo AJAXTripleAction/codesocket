@@ -23,4 +23,4 @@ render(
 	  , document.getElementById('app')
 	);
 
-console.log('Hello World');
+// console.log('Hello World');

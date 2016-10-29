@@ -19,7 +19,7 @@ export class LandingContainer extends React.Component {
   }
 
   type(text) {
-  	console.log('in type')
+  	// console.log('in type')
   	var context = this;
     context.tagline1.textContent = '|';
     var text1 = text[0];

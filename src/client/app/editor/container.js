@@ -103,12 +103,12 @@ export class EditorContainer extends React.Component {
 
     quill.on('text-change', function(delta,olddelta,source) {
       // console.log('get delta', delta.ops[0],delta.ops[1])
-      console.log('omg-------------', delta)
+      // console.log('omg-------------', delta)
       // console.log('delta decompose', delta.transform())
 
       var arr = [];
 
-      console.log('user-------------', source)
+      // console.log('user-------------', source)
       if(source === 'user') {
         var opPackage = {
           history: context.props.quillHistory,
@@ -116,11 +116,11 @@ export class EditorContainer extends React.Component {
           op: delta.ops,
           room: context.props.room
         }
-        console.log('serverquill:', context.props.serverState);
-        console.log('my change history:',context.props.quillHistory);
-        console.log('are they equal?:', context.props.serverState === context.props.quillHistory);
+        // console.log('serverquill:', context.props.serverState);
+        // console.log('my change history:',context.props.quillHistory);
+        // console.log('are they equal?:', context.props.serverState === context.props.quillHistory);
 
-        console.log('inflight Op:', context.props.inFlightOp);
+        // console.log('inflight Op:', context.props.inFlightOp);
 
         if(delta.ops[0].retain === undefined){
           delta.ops.unshift({retain:0});
@@ -139,8 +139,8 @@ export class EditorContainer extends React.Component {
             type: 'UPDATE_INFLIGHTOP',
             inFlightOp: [inFlightOp]
           })
-          console.log('a inFlightOp', inFlightOp)
-          console.log('calling---------------------------------------')
+          // console.log('a inFlightOp', inFlightOp)
+          // console.log('calling---------------------------------------')
           socket.emit('add inflight op', JSON.stringify(inFlightOp))
 
         } else {
@@ -148,8 +148,8 @@ export class EditorContainer extends React.Component {
           var newBufferString = JSON.stringify(context.props.buffer);
           var newBufferObj = JSON.parse(newBufferString);
           newBufferObj.push(opPackage);
-          console.log('server state:', context.props.serverState);
-          console.log('buffer:', newBufferObj);
+          // console.log('server state:', context.props.serverState);
+          // console.log('buffer:', newBufferObj);
 
           context.props.dispatch({
             type: 'UPDATE_BUFFER',
@@ -172,11 +172,11 @@ export class EditorContainer extends React.Component {
     });
 
     context.props.socket.on('clear inflight', function(inFlightOp){
-      console.log('in clear inflight!!------', inFlightOp)
+      // console.log('in clear inflight!!------', inFlightOp)
       //console.log('context.props.inFlight is: ', context.props.inFlightOp);
 
       if (JSON.stringify(inFlightOp.op) !== JSON.stringify(context.props.inFlightOp[0].op)) {
-        console.error('what? clearing a different inflight?', inFlightOp, context.props.inFlightOp);
+        // console.error('what? clearing a different inflight?', inFlightOp, context.props.inFlightOp);
         // context.props.dispatch({
         //   type: 'UPDATE_INFLIGHTOP', 
         //   inFlightOp: inFlightOp
@@ -191,12 +191,12 @@ export class EditorContainer extends React.Component {
     })
 
     context.props.socket.on('newOp', function(transformedOp){
-      console.log('got transformation:', transformedOp);
-      console.log('got transformation op:', transformedOp.op);
-      console.log('got new thing! ==========================')
-      console.log('got transformation:', transformedOp.id, socket.id);
+      // console.log('got transformation:', transformedOp);
+      // console.log('got transformation op:', transformedOp.op);
+      // console.log('got new thing! ==========================')
+      // console.log('got transformation:', transformedOp.id, socket.id);
       if(transformedOp.op[0].retain === 0){
-        console.log('delete retains 0');
+        // console.log('delete retains 0');
         var serverOpRetain = 0;
         var serverOp = null;
         //This changes retain 0 inserts and deletes to just be [{insert: 'x'}] or [{delete: 'x'}]
@@ -230,16 +230,16 @@ export class EditorContainer extends React.Component {
       }
 
       if(transformedOp.id !== socket.id){
-        console.log('not mine! ---------------------')
+        // console.log('not mine! ---------------------')
 
         context.props.dispatch({
           type: 'UPDATE_INCOMINGOP', 
           incomingOp: transformedOp
         });
-        console.log('my buffer ', context.props.buffer)
+        // console.log('my buffer ', context.props.buffer)
         
           if(context.props.inFlightOp.length){
-            console.log('getting transformed by inflight ', context.props.inFlightOp)
+            // console.log('getting transformed by inflight ', context.props.inFlightOp)
             //ot
             var transformedOpString = JSON.stringify(transformedOp);
             var transformedOp = JSON.parse(transformedOpString)
@@ -253,7 +253,7 @@ export class EditorContainer extends React.Component {
                 type: 'UPDATE_INCOMINGOP', 
                 incomingOp: newTransformedOp
               });
-              console.log('new inflightop', newBridge)
+              // console.log('new inflightop', newBridge)
               context.props.dispatch({
                 type: 'UPDATE_INFLIGHTOP', 
                 inFlightOp: newBridge
@@ -263,7 +263,7 @@ export class EditorContainer extends React.Component {
 
           if(context.props.buffer.length){
             //ot
-            console.log('getting transformed by buffer', context.props.buffer)
+            // console.log('getting transformed by buffer', context.props.buffer)
             var incomingString = JSON.stringify(context.props.incomingOp);
             var incoming = JSON.parse(incomingString);
 
@@ -282,18 +282,18 @@ export class EditorContainer extends React.Component {
               });
             })
           }
-          console.log('before finding 0 context.props.incomingOp.op', context.props.incomingOp.op)
+          // console.log('before finding 0 context.props.incomingOp.op', context.props.incomingOp.op)
 
           if(context.props.incomingOp.op[0].retain === 0){
              context.props.incomingOp.op.shift();
           }
 
-          console.log('after finding 0 context.props.incomingOp.op', context.props.incomingOp.op)
+          // console.log('after finding 0 context.props.incomingOp.op', context.props.incomingOp.op)
           quill.updateContents({ops:context.props.incomingOp.op}, 'api');
           // apply result to 
       } 
       //update server quill
-      console.log('serverOP before updating serverquill', serverOp[0], serverOp[1])
+      // console.log('serverOP before updating serverquill', serverOp[0], serverOp[1])
       serverquill.updateContents({ops:serverOp}, 'api');
       context.props.dispatch({
         type: 'UPDATE_SERVERSTATE', 
@@ -304,19 +304,19 @@ export class EditorContainer extends React.Component {
       var bufferString = JSON.stringify(context.props.buffer);
       var buffer = JSON.parse(bufferString);
 
-      console.log('before flushing buffer:', context.props.buffer, buffer)
-      console.log('buffer length:', context.props.buffer.length, buffer.length)
-      console.log('inFlightOp length:', context.props.inFlightOp.length)
+      // console.log('before flushing buffer:', context.props.buffer, buffer)
+      // console.log('buffer length:', context.props.buffer.length, buffer.length)
+      // console.log('inFlightOp length:', context.props.inFlightOp.length)
       if(buffer.length && context.props.inFlightOp.length === 0){
-        console.log('flushing buffer--------------')
+        // console.log('flushing buffer--------------')
         var inFlightOp = buffer[0];
 
         context.props.dispatch({
           type: 'UPDATE_INFLIGHTOP',
           inFlightOp: [inFlightOp]
         })
-        console.log('emit after flush buffer', inFlightOp)
-        console.log('calling---------------------------------------')
+        // console.log('emit after flush buffer', inFlightOp)
+        // console.log('calling---------------------------------------')
 
         socket.emit('add inflight op', JSON.stringify(inFlightOp));
 
@@ -386,9 +386,9 @@ export class EditorContainer extends React.Component {
       type: 'UPDATE_SERVERSTATE', 
       serverState: serverquill.getText()
     }); 
-    console.log('---serverquill text', context.props.quillHistory)
-    console.log('---serverquill text', context.props.serverState)
-    console.log('---serverquill text', context.props.serverState === context.props.quillHistory)
+    // console.log('---serverquill text', context.props.quillHistory)
+    // console.log('---serverquill text', context.props.serverState)
+    // console.log('---serverquill text', context.props.serverState === context.props.quillHistory)
   } // ComponentDidMount
 
   
@@ -396,18 +396,18 @@ export class EditorContainer extends React.Component {
     var contents = this.props.quill.getContents();
     var gettext = this.props.quill.getText();
     
-    console.log('contents',contents);
-    console.log('gettext',gettext);
-    console.log('serverquill', this.props.serverquill)
+    // console.log('contents',contents);
+    // console.log('gettext',gettext);
+    // console.log('serverquill', this.props.serverquill)
     var serverquilltext =  this.props.serverquill.getText();
-    console.log('compare server to client', serverquilltext === gettext)
+    // console.log('compare server to client', serverquilltext === gettext)
 
     $.ajax({
       url: '/savedoc',
       type: "POST",
       data: {'room': this.props.room, 'contents': JSON.stringify(contents.ops)},
       success: function(response) {
-        console.log((response));
+        // console.log((response));
       }
     });
   }
@@ -472,14 +472,14 @@ export class EditorContainer extends React.Component {
       window.counter++;
       var char = Math.floor(Math.random()*10) + '';
       var index = Math.floor(Math.random() * (this.props.quill.getText().length -2)) + 1;
-      console.log('=================GET TEXT', this.props.quill.getText(), this.props.quill.getText().length)
+      // console.log('=================GET TEXT', this.props.quill.getText(), this.props.quill.getText().length)
       var op = [{retain: index}, {insert: char}];
       if(window.counter=== 10) {
         window.counter = 0;
       }
       var op = [{retain: 2}, {insert: ''+window.counter}];
 
-      console.log('op', op)
+      // console.log('op', op)
 
       this.props.quill.updateContents({ops: op}, 'user');
     }

@@ -13,7 +13,7 @@ export class DocContainer extends React.Component {
   }
 
   componentWillMount() {
-    console.log('ever comes here')
+    // console.log('ever comes here')
     var socket = io();//{'forceNew':true}
     this.props.dispatch({
       type: 'UPDATE_SOCKET',
@@ -27,8 +27,8 @@ export class DocContainer extends React.Component {
   }
   componentWillReceiveProps(newProps) {
     var context = this;
-    console.log(newProps)
-    console.log(this.props.params.roomname, newProps.params.roomname)
+    // console.log(newProps)
+    // console.log(this.props.params.roomname, newProps.params.roomname)
     if(this.props.params.roomname !== newProps.params.roomname) {
       this.props.dispatch({
         type: 'UPDATE_ROOM',
@@ -39,7 +39,7 @@ export class DocContainer extends React.Component {
     }
     axios.get('/access')
     .then( function(obj) {
-      console.log('axios success in doc')
+      // console.log('axios success in doc')
       if(!obj.data.user_name) {
           hashHistory.push('/');
       }
@@ -51,11 +51,11 @@ export class DocContainer extends React.Component {
     })
   }
   componentDidMount() {
-    console.log(this.props.params.roomname);
+    // console.log(this.props.params.roomname);
     var context = this;
     axios.get('/roomExists', {params: {user: this.props.userName, room: this.props.params.roomname}})
     .then(function(roomExists){
-      console.log('does room exist???', roomExists.data)
+      // console.log('does room exist???', roomExists.data)
       if(roomExists.data) {
         context.props.dispatch({
           type: 'UPDATE_ROOM',
@@ -68,7 +68,7 @@ export class DocContainer extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('does doc unmount');
+    // console.log('does doc unmount');
     // console.log(this.props.socket);
     // this.props.socket.disconnect();
     // this.props.dispatch({

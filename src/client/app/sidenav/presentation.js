@@ -51,7 +51,7 @@ const style = {
 }
 
 export const SidePresentation = (props) => {
-  console.log("i am in SidePresentation")
+  // console.log("i am in SidePresentation")
     return (
       <div className='loadingscreen' style={style}>
   
