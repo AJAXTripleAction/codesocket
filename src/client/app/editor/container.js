@@ -125,7 +125,7 @@ export class EditorContainer extends React.Component {
         if(delta.ops[0].retain === undefined){
           delta.ops.unshift({retain:0});
         }
-        
+
         if(context.props.serverState === context.props.quillHistory 
           && context.props.inFlightOp.length === 0
           && context.props.buffer.length === 0){
@@ -155,6 +155,12 @@ export class EditorContainer extends React.Component {
             type: 'UPDATE_BUFFER',
             buffer: newBufferObj
           })
+
+          // If buffer is way too large, automatically reload page:
+          if (context.props.buffer.length > 100) {
+            // This will refresh the page and reset redux store.
+            window.location.reload();
+          }
         }
       };
 
